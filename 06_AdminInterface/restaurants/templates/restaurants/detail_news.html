@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Детали новости</title>
+</head>
+<body>
+    {{ news_detail.body }}
+    {% if comments %}:
+        <h5>Все коментарии ({{ comments.count }}) </h5>
+
+        {% for comment in comments %}
+            <h6>
+                Имя: {{ comment.name }} <br>
+                Коментарии: {{ comment.text }}
+            </h6>
+
+        {% endfor %}
+
+    {% else %}
+        <h5>Коментареев нет.</h5>
+    {% endif %}
+    <form method="get" action="/news/{{news_detail.id}}/add_comment">
+        <button>Добавить каментарии</button>
+    </form>
+    <form method="get" action="/">
+        <button type="submit">Главная строница</button>
+    </form>
+</body>
+</html>
