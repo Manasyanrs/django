@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+</head>
+<body>
+    {% if request.user.is_authenticated %}
+        <h3>Welcome {{ request.user.username }}</h3>
+        <form action="/logout/" method="post">
+          {% csrf_token %}
+          <button type="submit">Log Out</button>
+          <button type="submit" formmethod="get" formaction="/user_orders/">My order</button>
+        </form>
+    {% else %}
+        <div style="display: flex; flex-direction: column; align-items: center;
+                    border: 2px solid #1b1b1b; font-size: 20px; justify-content: space-between">
+            <div>
+                <span style="">Please sign in or registered new account</span>
+            </div>
+            <div style="margin-top: 20px">
+                <form method="get">
+                    <button type="submit" formaction="/login/">Login</button>
+                    <button type="submit" formaction="/register/">Registration</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+    <br>
+    {% if all_products %}
+        <h1>All Products</h1>
+        {% for product in all_products %}
+            <div>
+                <span>Name: </span><a href="/product/{{ product.id }}/"> {{ product.name }}</a><br>
+                <span>Price: {{product.price}}</span>
+                <form method="get" action="/product/{{ product.id }}/update_product">
+                    <button>Edit</button>
+                    {%if request.user.is_authenticated and request.user.id == product.author.id%}
+                        <button formmethod="get" formaction="/product/{{ product.id }}/delete_product">Delete</button>
+                    {%endif%}
+                    <button formmethod="get" formaction="/add_to_order/{{ product.id }}">Add to order</button>
+                </form>
+            </div>
+            <div style="margin-top: 10px"></div>
+        {% endfor %}
+    {% else %}
+        Products not found please add product.
+    {% endif %}<br>
+
+    <form method="get" action="/add_product" style="margin-top: 10px">
+        <button type="submit">Add product</button>
+    </form>
+
+    {% if count_page > 1%}
+        {% for page in pages %}
+            <a href="?page={{ page }}">{{ page }}</a>
+        {% endfor %}
+    {%endif%}
+
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+{% load cache %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order List</title>
+</head>
+<body>
+
+<h1>Order list</h1>
+{% if request.user.is_authenticated %}
+    <div style="display: flex; margin-bottom: 20px">
+        {% if my_orders.count == 0 %}
+            <h3 style="color: crimson">User {{ user.first_name }} has no orders yet.</h3>
+        {% else %}
+            <h3>User {{ user.first_name }} completed the following orders.</h3>
+        {% endif %}
+    </div>
+    {% cache 200 user.id my_orders %}
+        {% for order in my_orders %}
+            <div>
+                <span>Name: {{ order.name }}</span><br>
+                <span>Description: {{ order.description }}</span><br>
+                <span>Price: {{ order.price }}</span>
+            </div>
+            <br>
+
+        {% endfor %}
+    {% endcache %}
+     <div>
+         {% lorem 3 p random %}
+     </div>
+
+{% else %}
+    <h3>Permission denied</h3>
+{% endif %}
+
+<div style="display: flex; margin-top: 20px">
+    <a href="/">
+        <button>Back to home</button>
+    </a>
+
+</div>
+
+
+</body>
+</html>
