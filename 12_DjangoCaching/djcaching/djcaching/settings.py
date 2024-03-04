@@ -37,6 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    "auth_user.apps.AuthUserConfig",
+    "shop_app.apps.ShopAppConfig",
+    "orders.apps.OrdersConfig",
+
 ]
 
 MIDDLEWARE = [
@@ -118,3 +123,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+LOGOUT_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/"
