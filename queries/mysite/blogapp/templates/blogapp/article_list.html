@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Article</title>
+</head>
+<body>
+<div>
+    <h1>Article list</h1>
+</div>
+{% for article in article_list %}
+    <div style="margin-left: 20px">
+        <p>Title: {{ article.title }} </p>
+        <p>Pub date: {{ article.pub_date }} </p>
+        <p>Author: {{ article.author }} </p>
+        <p>Category: {{ article.category.name }} </p>
+        {% if article.tags.all %}
+            <div style="display: flex; align-items: baseline; ">
+                <div><span>Tags:</span></div>
+                <div style="margin-left: 20px">
+                    {% for tag in article.tags.all %}
+                        <ul> {{ tag.name }}</ul>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <span>Tags: {{ article.tags.name }}</span>
+        {% endif %}
+
+    </div>
+
+
+{% endfor %}
+</body>
+</html>
