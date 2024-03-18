@@ -13,10 +13,16 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 
 from django.urls import reverse_lazy
+import sentry_sdk
+
+sentry_sdk.init(
+    dsn="https://8f4c3cc7d60504a99baa0952a193daa4@o4506934031482880.ingest.us.sentry.io/4506934040133632",
+    traces_sample_rate=1.0,
+    profiles_sample_rate=1.0,
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -27,7 +33,24 @@ SECRET_KEY = 'django-insecure-hvxn%qq=gyw^4*o2lo1#bw0=wh#ux9s8h!=@c608arf_gz3+^7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "localhost",
+    "0.0.0.0",
+    "127.0.0.1"
+]
+
+INTERNAL_IPS = [
+    '127.0.0.1'
+]
+
+if DEBUG:
+    # this code for the djando debug toolbar in docker file
+    import socket
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS.append("10.0.2.2")
+    INTERNAL_IPS.extend(
+        [ip[: ip.rfind(".")] + ".1" for ip in ips]
+    )
 
 
 # Application definition
@@ -39,6 +62,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    "debug_toolbar",
 
     'rest_framework',
     'django_filters',
@@ -55,6 +80,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware"
 ]
 
 ROOT_URLCONF = 'mysite.urls'
@@ -87,7 +113,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -144,3 +169,36 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = reverse_lazy("myauth:about-me")
 LOGIN_URL = reverse_lazy("myauth:login")
+
+LOGFILE_NAME = BASE_DIR / "logs.txt"
+LOGFILE_SIZE = 2 * 1024 * 1024
+LOGFILE_COUNT = 4
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "%(asctime)s [%(levelname)s] %(name)-25s %(message)s ",
+            "datefmt": "%Y-%m-%d %H:%M",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+        "logfile": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": LOGFILE_NAME,
+            "maxBytes": LOGFILE_SIZE,
+            "backupCount": LOGFILE_COUNT,
+            "formatter": "verbose"
+        },
+    },
+    "root": {
+        "handlers": ["console", "logfile"],
+        "level": "INFO",
+    },
+
+}
