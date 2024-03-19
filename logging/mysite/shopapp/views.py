@@ -1,3 +1,4 @@
+import logging
 from timeit import default_timer
 
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, JsonResponse
@@ -13,6 +14,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .forms import ProductForm
 from .models import Product, Order, ProductImage
 from .serializers import ProductSerializer
+
+log = logging.getLogger(__name__)
 
 
 class ProductViewSet(ModelViewSet):
@@ -40,6 +43,7 @@ class ProductViewSet(ModelViewSet):
 
 class ShopIndexView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
+        log.info("Start get method in class ShopIndexView")
         products = [
             ('Laptop', 1999),
             ('Desktop', 2999),
@@ -49,6 +53,10 @@ class ShopIndexView(View):
             "time_running": default_timer(),
             "products": products,
         }
+        # This for testing how to work Sentry
+        # print(context["time_running"])
+        # end of test
+        log.info("End get method in class ShopIndexView")
         return render(request, 'shopapp/shop-index.html', context=context)
 
 
