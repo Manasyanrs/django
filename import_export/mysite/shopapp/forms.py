@@ -11,3 +11,7 @@ class ProductForm(forms.ModelForm):
     images = forms.ImageField(
         widget=forms.ClearableFileInput(attrs={"multiple": True}),
     )
+
+
+class OrderForm(forms.Form):
+    json_order = forms.FileField()
