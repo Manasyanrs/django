@@ -74,3 +74,4 @@ KeyError: 'time_runnin'
 2024-03-18 21:19 [INFO] django.utils.autoreload   Watching for file changes with StatReloader 
 2024-03-18 21:20 [INFO] django.utils.autoreload   /home/radik/PycharmProjects/python_django/logging/mysite/shopapp/views.py changed, reloading. 
 2024-03-18 21:20 [INFO] django.utils.autoreload   Watching for file changes with StatReloader
+
