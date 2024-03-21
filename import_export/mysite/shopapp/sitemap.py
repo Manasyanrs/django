@@ -1,0 +1,10 @@
+from django.contrib.sitemaps import Sitemap
+from .models import Product
+
+
+class ShopSitemap(Sitemap):
+    changefreq = "never"
+    priority = 0.3
+
+    def items(self):
+        return Product.objects.filter(archived=False).order_by("-created_at")
